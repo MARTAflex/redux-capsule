@@ -1,0 +1,72 @@
+{
+  "name": "redux-encapsulated",
+  "version": "0.1.0",
+  "description": "",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
+  "scripts": {
+    "clean": "rimraf lib es",
+    "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
+    "build:es": "cross-env babel src --out-dir es",
+    "build:umd": "!!!!FIXME!!!! cross-env BABEL_ENV=commonjs webpack src/index.js dist/redux-encapsulated.js",
+    "build": "npm run build:commonjs && npm run build:es",
+    "prepublish": "npm run clean && npm run build",
+    "test": "mocha --sort --require co-mocha --compilers js:babel-register",
+    "test:all": "npm test src/**/*.spec.js",
+  },
+  "babel": {
+    "plugins": [
+      "transform-es2015-destructuring",
+      "transform-object-rest-spread"
+    ],
+    "presets": [
+        "react"
+    ],
+    "env": {
+      "commonjs": {
+        "plugins": [
+          [
+            "transform-es2015-modules-commonjs",
+            {
+              "loose": true
+            }
+          ]
+        ]
+      }
+    }
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.0",
+    "babel-plugin-transform-es2015-destructuring": "^6.9.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
+    "babel-preset-react": "^6.11.1",
+    "chai": "^3.5.0",
+    "co-mocha": "^1.2.0",
+    "cross-env": "^4.0.0",
+    "enzyme": "^2.8.0",
+    "jsdom": "^9.12.0",
+    "mocha": "^3.2.0",
+    "navigator": "^1.0.1",
+    "react-addons-test-utils": "^15.4.2",
+    "react-redux": "^5.0.3",
+    "redux": "^3.6.0",
+    "rimraf": "^2.6.1",
+    "webpack": "^2.4.1"
+  },
+  "dependencies": {
+    "object-path": "^0.11.4",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
+  },
+  "files": [
+    "lib",
+    "es",
+    "dist",
+    "src"
+  ]
+}

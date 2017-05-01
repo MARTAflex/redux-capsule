@@ -1,0 +1,42 @@
+{
+  "name": "counters",
+  "private": true,
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --sort --require co-mocha --compilers js:babel-register",
+    "test:all": "npm test src/**/*.spec.js"
+  },
+  "babel": {
+    "presets": [
+      "react"
+    ],
+    "plugins": [
+      "transform-es2015-destructuring",
+      "transform-object-rest-spread"
+    ]
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.24.0",
+    "babel-plugin-transform-es2015-destructuring": "^6.9.0",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
+    "babel-preset-react": "^6.11.1",
+    "chai": "^3.5.0",
+    "co-mocha": "^1.2.0",
+    "enzyme": "^2.8.0",
+    "jsdom": "^9.12.0",
+    "mocha": "^3.2.0",
+    "navigator": "^1.0.1",
+    "react-addons-test-utils": "^15.4.2"
+  },
+  "dependencies": {
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-redux": "^5.0.3",
+    "redux": "^3.6.0",
+    "redux-encapsulated": "file:../../"
+  }
+}
