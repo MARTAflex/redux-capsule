@@ -7,18 +7,34 @@ var React = require('react');
             // ... -> path = 'Foo.Bar'
         </Scope>
     </Scope>
+
+    <Scope path="Foo">
+        <Scope path="#ROOT">
+            // ... -> path = none
+        </Scope>
+    </Scope>
 */
+
+// FIXME: change default delim to '/'
+//        and add paths starting with '/' to be relative to root
+//        ie.: like in unix file system
+var createPath = (contextPath, componentPath, delim) => {
+    if (componentPath === '#ROOT') {
+        return undefined;
+    }
+    return (
+        contextPath
+        ? contextPath + delim + componentPath
+        : componentPath
+    )
+}
 
 class Scope extends React.Component {
     constructor (props, context) {
         super(props, context)
         this.delim = context.delim || props.delim || '.';
-        // FIXME: require scope property
-        this.path = (
-            context.path
-            ? context.path + this.delim + props.path
-            : props.path
-        );
+        // FIXME: path must be set, check that
+        this.path = createPath(context.path, props.path, this.delim);
     }
 
     getChildContext () {
@@ -38,7 +54,7 @@ Scope.propTypes = {
     children: PropTypes.element.isRequired
 };
 Scope.childContextTypes = {
-    path: PropTypes.string.isRequired,
+    path: PropTypes.string,
     delim: PropTypes.string,
 };
 Scope.contextTypes = {
