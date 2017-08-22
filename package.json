@@ -12,7 +12,7 @@
     "build:umd": "!!!!FIXME!!!! cross-env BABEL_ENV=commonjs webpack src/index.js dist/redux-encapsulated.js",
     "build": "npm run build:commonjs && npm run build:es",
     "prepublish": "npm run clean && npm run build",
-    "test": "mocha --sort --require co-mocha --compilers js:babel-register",
+    "test": "./node_modules/mocha/bin/mocha --sort --require co-mocha --compilers js:babel-register",
     "test:all": "npm test src/**/*.spec.js"
   },
   "babel": {
