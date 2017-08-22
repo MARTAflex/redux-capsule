@@ -19,16 +19,20 @@ var withScope = function (reducer, scope) {
             }
             return state;
         }
-        else {
-            // if tthe state is not initialized we need to call
-            // the reducer even if the action diesnt metch. so
-            // taht we get the default state
-            // the problem is that if we the action type we react to is the same
-            // in both the outer and the inner reducer, the inner one will
-            // be called here
-            // FIXME: nay better ideas?
+
+        // if the state is not initialized we need to call
+        // the reducer even if the action doesnt metch. so
+        // we create state defaults for the reducers below
+        if (action.type === '@@redux/INIT') {
+            return reducer(state, action);
+        }
+
+        // if we call the reducer manually we obviously dont have the redux
+        // init action so we need to manually initialize the nested state
+        if (state === undefined) {
             return reducer(state, { type : '@@scope/not-matching'});
         }
+        return state;
     };
     wrapper.scope = scope;
     return wrapper;
