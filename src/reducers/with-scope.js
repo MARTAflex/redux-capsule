@@ -1,20 +1,64 @@
 'use strict';
+var escape = require('escape-string-regexp'),
+    config = require('../config');
+
 var withScope = function (reducer, scope) {
-    // Foo.Bar.myaction  => trigger just that action
-    // Foo.*.myaction    => trigger that action in all scopes directly below Foo
-    // Foo.**.myaction => trigger that action in all scopes below Foo
-    // FIXME: delimiter
-    var rx = new RegExp('^([*]{1,2}|' + scope + ')\.'); 
+    // action type:
+    // Foo/Bar/myaction  => trigger just that action
+    // Foo/*/myaction    => trigger that action in all scopes directly below Foo
+    // Foo/**/myaction => trigger that action in all scopes below Foo
+    //
+    // scope:
+    // Foo => matches all actions that start with Foo.*
+    // * => matches all actions that start with *.*
+    // ** => matches all actions i.e. **.someaction
+
+    var star = /(?:(?!\*).|^)\*(?!\*)/g;
+    var globstar = /\*\*/g;
+    var anystar = /\*\*?/g;
+
+    var rxDelim = escape(config.delim),
+        rxScope;
+
+    if (scope instanceof RegExp) {
+        rxScope = scope.source
+    }
+    else {
+        rxScope = scope;
+
+        // FIXME: rxGlob dosnt work for multichar delimiters
+        var rxGlob = '[^' + rxDelim + ']*' + rxDelim + '?';
+        var rxGlobstar = '.*';
+        
+        rxScope = rxScope.replace(star, rxGlob);
+        rxScope = rxScope.replace(globstar, rxGlobstar)
+    }
+
+    var rxReducer = new RegExp('^(?:[*]{1,2}|' + rxScope + ')' + rxDelim),
+        rxGlobstar = new RegExp('^[*]{2}' + rxDelim);
+
     var wrapper = (state, action) => {
-        if (action.type.match(rx)) {
-            state = reducer(state, { // shallow copy
+
+        // FIXME: regex used for actionScope doe not support
+        //        multichar delimiters
+        // FIXME: call this regex matchUnscopedActionType or something
+        //
+        // scopeOf(action.type);
+        // descope(action.type);
+        //
+        var actionScope = action.type.replace(new RegExp(
+            rxDelim + '?[^' + rxDelim + ']+$'
+        ), '') + config.delim;
+
+        if (rxReducer.test(actionScope)) {
+            state = reducer(state, {
                 ...action,
-                type: action.type.replace(rx, '')
+                type: action.type.replace(rxReducer, '')
             });
+
             // if type is like **.someaction also call the reducer
             // with the unmodified action and the current state
-            // FIXME: delimiter
-            if (action.type.match(/^[*]{2}\./)) {
+            if (rxGlobstar.test(actionScope)) {
                 state = reducer(state, action);
             }
             return state;

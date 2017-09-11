@@ -1,10 +1,11 @@
 'use strict';
-var React = require('react');
+var React = require('react'),
+    config = require('../config');
 
 /*
     <Scope path='Foo'>
         <Scope path='Bar'>
-            // ... -> path = 'Foo.Bar'
+            // ... -> path = 'Foo:Bar'
         </Scope>
     </Scope>
 
@@ -32,7 +33,7 @@ var createPath = (contextPath, componentPath, delim) => {
 class Scope extends React.Component {
     constructor (props, context) {
         super(props, context)
-        this.delim = context.delim || props.delim || '.';
+        this.delim = context.delim || props.delim || config.delim;
         // FIXME: path must be set, check that
         this.path = createPath(context.path, props.path, this.delim);
     }
