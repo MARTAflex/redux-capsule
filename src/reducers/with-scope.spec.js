@@ -66,7 +66,7 @@ describe('/reducers/with-scope', () => {
         expect(called).to.eql(1);
     });
 
-    it('works for wildcards', () => {
+    it('works for wildcards in action types', () => {
         var inner = withScope((state, action) => {
             var state = state || { someaction: false };
             if (action.type == 'SomeAction') {
@@ -93,5 +93,76 @@ describe('/reducers/with-scope', () => {
         expect(state).to.eql({ someaction: true });
     });
 
+    describe('wildcards in reducer scope', () => {
+    
+        it('* matches current level and one level below', () => {
+            var reducer = withScope((state, action) => {
+                var state = state || {
+                    someaction: false,
+                    fooaction: false,
+                };
+                if (action.type == 'SomeAction') {
+                    return { ...state, someaction: true }
+                }
+                if (action.type == 'FooAction') {
+                    return { ...state, fooaction: true }
+                }
+                return state;
+            }, '*');
 
+            var state;
+        
+            state = reducer(undefined, { type: 'SomeAction' });
+            expect(state).to.eql({
+                fooaction: false,
+                someaction: true
+            });
+
+            state = reducer(undefined, { type: 'Foo.FooAction' });
+            expect(state).to.eql({
+                fooaction: true,
+                someaction: false
+            });
+
+            state = reducer(undefined, { type: 'Foo.SomeAction' });
+            expect(state).to.eql({
+                fooaction: false,
+                someaction: true
+            });
+
+            state = reducer(undefined, { type: 'Foo.Bar.SomeAction' });
+            expect(state).to.eql({
+                fooaction: false,
+                someaction: false
+            });
+
+        })
+
+        it('** matches current level and all levels below', () => {
+            var reducer = withScope((state, action) => {
+                var state = state || { someaction: false };
+
+                if (action.type == 'SomeAction') {
+                    return { ...state, someaction: true }
+                }
+
+                return state;
+            }, '**');
+
+            var state;
+        
+            state = reducer(undefined, { type: 'SomeAction' });
+            expect(state).to.eql({ someaction: true });
+
+            state = reducer(undefined, { type: 'Foo.SomeAction' });
+            expect(state).to.eql({ someaction: true });
+
+            state = reducer(undefined, { type: 'Foo.Bar.SomeAction' });
+            expect(state).to.eql({ someaction: true });
+
+            state = reducer(undefined, { type: 'Foo.BarSomeAction' });
+            expect(state).to.eql({ someaction: false });
+
+        })
+    })
 });

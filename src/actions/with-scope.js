@@ -1,6 +1,5 @@
 'use strict';
-
-var delim = '.'; // FIXME
+var config = require('../config');
 
 // higher order action generator
 // modifies type of action to reflect scope
@@ -9,7 +8,7 @@ var withScope = (action, scope) => (
         var a = action(...arguments);
         return {
             ...a,
-            type: scope + delim + a.type
+            type: scope + config.delim + a.type
         }
     }
 );

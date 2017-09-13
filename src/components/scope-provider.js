@@ -1,8 +1,8 @@
 'use strict';
-var React = require('react');
-var opath = require("object-path");
-var dispatch = require('../util/').dispatch;
-var Scope = require('./scope').default;
+var React = require('react'),
+    opath = require("object-path"),
+    dispatch = require('../util/').dispatch,
+    Scope = require('./scope').default;
 
 class ScopeProvider extends Scope {
     constructor (props, context) {

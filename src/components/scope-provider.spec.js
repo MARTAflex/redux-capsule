@@ -15,7 +15,16 @@ var ScopeProvider = require('./scope-provider').default;
 var thunk = require('../middlewares/thunk');
 
 var Root = (state, action) => {
-    return state || {}
+    state = state || {
+        value: 0
+    };
+    if (action.type === 'increment') {
+        return {
+            ...state,
+            value: state.value + 1
+        }
+    }
+    return state;
 };
 var Dummy = (state, action) => {
     state = state || {
@@ -262,6 +271,58 @@ describe('components/scope-provider', () => {
 
         var rendered = wrapper.render();
         expect(rendered.toString()).to.eql('<a id="inc-0">1</a>');
+    });
+
+    it('handles simple breakout dispatch (#ROOT)', () => {
+    
+        var wrapper = mount(
+            <Provider store={ store }>
+                <ScopeProvider path="Outer">
+                    <ScopeProvider path="Inner">
+
+                        <ScopeProvider path="#ROOT">
+                            <Incrementer id="elsewhere" />
+                        </ScopeProvider>
+
+                    </ScopeProvider>
+                </ScopeProvider>
+            </Provider>
+        );
+
+        var elsewhere = wrapper.find('#elsewhere');
+        elsewhere.simulate('click');
+
+        expect(elsewhere.render().html()).to.eql('<a id="elsewhere">1</a>');
+        expect(store.getState().value).to.equal(1);
+    })
+
+    it('handles nested breakout dispatch (#ROOT)', () => {
+        var wrapper = mount(
+            <Provider store={ store }>
+                <ScopeProvider path="Outer">
+                    <ScopeProvider path="Inner">
+
+                        <ScopeProvider path="#ROOT">
+                            <ScopeProvider path="Alt">
+                                <Incrementer id="alt-0" />
+                            </ScopeProvider>
+                        </ScopeProvider>
+
+                    </ScopeProvider>
+                </ScopeProvider>
+            </Provider>
+        );
+
+        var alt0 = wrapper.find('#alt-0');
+        alt0.simulate('click');
+
+        expect(alt0.render().html()).to.eql('<a id="alt-0">1</a>');
+
+        expect(store.getState()).to.eql({
+            Outer:{ value: 0, Inner: { value: 0, Nested: { value: 0 }}},
+            Alt: { value: 1, Inner: { value: 0 }},
+            value: 0
+        });
     });
 
 });

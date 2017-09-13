@@ -1,8 +1,8 @@
 {
-  "name": "redux-encapsulated",
+  "name": "redux-capsule",
   "version": "0.1.0",
   "description": "",
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
   "scripts": {
@@ -12,8 +12,8 @@
     "build:umd": "!!!!FIXME!!!! cross-env BABEL_ENV=commonjs webpack src/index.js dist/redux-encapsulated.js",
     "build": "npm run build:commonjs && npm run build:es",
     "prepublish": "npm run clean && npm run build",
-    "test": "mocha --sort --require co-mocha --compilers js:babel-register",
-    "test:all": "npm test src/**/*.spec.js",
+    "test": "./node_modules/mocha/bin/mocha --sort --require co-mocha --compilers js:babel-register",
+    "test:all": "npm test src/**/*.spec.js"
   },
   "babel": {
     "plugins": [
@@ -21,7 +21,7 @@
       "transform-object-rest-spread"
     ],
     "presets": [
-        "react"
+      "react"
     ],
     "env": {
       "commonjs": {
@@ -59,6 +59,8 @@
     "webpack": "^2.4.1"
   },
   "dependencies": {
+    "escape-string-regexp": "^1.0.5",
+    "micromatch": "^3.0.5",
     "object-path": "^0.11.4",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"

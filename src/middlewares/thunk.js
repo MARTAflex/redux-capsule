@@ -1,4 +1,5 @@
 'use strict';
+var opath = require("object-path");
 var scopeDispatch = require('../util/').dispatch;
 
 function createThunkMiddleware(extraArgument) {
@@ -6,7 +7,10 @@ function createThunkMiddleware(extraArgument) {
         if (typeof action === 'function') {
             return action(
                 (innerAction) => (scopeDispatch(dispatch, innerAction, action.scope)),
-                getState,
+                // FIXME: getState implementation is fucking stupid
+                // FIXME: check path exists
+                // FIXME: custom delim might need tr//
+                () => opath.get(getState(), action.scope),
                 extraArgument
             );
 
