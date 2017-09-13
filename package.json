@@ -2,7 +2,7 @@
   "name": "redux-capsule",
   "version": "0.1.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
   "scripts": {
@@ -21,6 +21,7 @@
       "transform-object-rest-spread"
     ],
     "presets": [
+      "es2015",
       "react"
     ],
     "env": {
