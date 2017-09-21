@@ -7,10 +7,15 @@ module.exports = (dispatch, action, scope, delim) => {
         scope = action.scope;
     }
 
-    if (scope) {
+    if (scope && action.scope) {
+        action.scope = scope + delim + action.scope;
+    }
+
+    if (scope && !action.scope) {
         // FIXME: is that safe?
         action.scope = scope;
     }
+
 
     // FIXME: might not be a sufficient test
     if (scope && action.type) {

@@ -3,14 +3,15 @@ var config = require('../config');
 
 // higher order action generator
 // modifies type of action to reflect scope
-var withScope = (action, scope) => (
-    function () {
-        var a = action(...arguments);
-        return {
-            ...a,
-            type: scope + config.delim + a.type
-        }
+var withScope = (action, scope) => (...args) => {
+    var a = action(...args);
+
+    a.scope = scope;
+    if (typeof a !== 'function') {
+        a.type = scope + config.delim + a.type
     }
-);
+
+    return a;
+};
 
 module.exports = withScope;
