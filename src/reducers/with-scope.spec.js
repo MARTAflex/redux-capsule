@@ -165,4 +165,28 @@ describe('/reducers/with-scope', () => {
 
         })
     })
+
+    describe('sibling interaction', () => {
+        it('siblings on the same level can work together', () => {
+
+            var reducer = withScope((state, action) => {
+                var state = { ...state } || { herp: undefined };
+                if (action.type === 'SomeAction') {
+                    state.herp = 'local'
+                }
+                if (action.type === 'bar.SomeAction') {
+                    state.herp = 'from-bar'
+                }
+                return state;
+            }, 'foo');
+        
+            var state;
+
+            state = reducer(undefined, { type: 'foo.SomeAction' });
+            expect(state).to.eql({ herp: 'local' });
+
+            state = reducer(undefined, { type: 'bar.SomeAction' });
+            expect(state).to.eql({ herp: 'from-bar' });
+        })
+    })
 });

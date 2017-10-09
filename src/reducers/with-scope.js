@@ -64,6 +64,15 @@ var withScope = function (reducer, scope) {
             return state;
         }
 
+        // to enable siblings work together we need to
+        // pass the unmodified action in nested situation
+        // i.e. if foo.herpAction and we have foo and bar scope
+        // we want to pass foo.herpAction to bar scope as well
+        // but we dont wanna do this for actions that have no scope
+        if (actionScope !== '.' && !rxReducer.test(actionScope)) {
+            return reducer(state, action);
+        }
+
         // if the state is not initialized we need to call
         // the reducer even if the action doesnt metch. so
         // we create state defaults for the reducers below
