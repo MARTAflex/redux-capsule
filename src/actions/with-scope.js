@@ -6,7 +6,11 @@ var config = require('../config');
 var withScope = (action, scope) => (...args) => {
     var a = action(...args);
 
-    a.scope = scope;
+    // FIXME: we shouldnt override scope but rather create '@@redux-capsule-scope'
+    //        setting this might also only be relevant for thunks, but im not sure there
+    //        the relates test fails, ill not fix that yet until i decided what to do about this
+    //        behavior in general
+    a.scope = scope; 
     if (typeof a !== 'function') {
         a.type = scope + config.delim + a.type
     }
