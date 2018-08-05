@@ -12,6 +12,7 @@ helpers.navigator();
 
 var { withScope, withScopeReducer } = require('../reducers/');
 var ScopeProvider = require('./scope-provider').default;
+var scopedAction = require('../actions/with-scope');
 var thunk = require('../middlewares/thunk');
 
 var Root = (state, action) => {
@@ -68,8 +69,14 @@ var Incrementer = (() => {
         });
         return connect(values, methods)(Component);
     };
-    var Component = (ps) => (
-        <a id={ ps.id } onClick={ () => ps.increment() }>{ ps.value }</a>
+    var Component = ({ id, increment, postIncrement, value, ...other }) => (
+        <a
+            id={ id }
+            onClick={ () => {
+                increment();
+                postIncrement && postIncrement();
+            }}
+        >{ value }</a>
     );
     return Connect(Component);
 })();
@@ -91,7 +98,6 @@ var Thunker = (() => {
     );
     return Connect(Component);
 })();
-
 
 describe('components/scope-provider', () => {
 
@@ -273,6 +279,55 @@ describe('components/scope-provider', () => {
         expect(rendered.toString()).to.eql('<a id="inc-0">1</a>');
     });
 
+    it('handles passed dispatches correctly (cross-dispatch)', () => {
+
+        var Bundle = (() => {
+            var Connect = (Component) => {
+                var values = (state, props) => ({
+                });
+                var methods = (dispatch, props) => ({
+                    incrementAlt: () => dispatch(scopedAction(
+                        () => ({ type: 'increment' }), 'Alt'
+                    )())
+                });
+                return connect(values, methods)(Component);
+            };
+            var Component = (ps) => (
+                <div>
+                    
+                    <ScopeProvider path="Outer">
+                        <Incrementer
+                            id="inc-outer"
+                            postIncrement={ ps.incrementAlt }
+                        />
+                    </ScopeProvider>
+
+                    <ScopeProvider path="Alt">
+                        <Incrementer id="inc-alt" />
+                    </ScopeProvider>
+
+                </div>
+            );
+            return Connect(Component);
+        })();
+
+
+        var wrapper = mount(
+            <Provider store={ store }>
+                <Bundle />
+            </Provider>
+        );
+
+        wrapper.find('#inc-outer').simulate('click');
+        wrapper.find('#inc-outer').simulate('click');
+        wrapper.find('#inc-alt').simulate('click');
+        wrapper.find('#inc-outer').simulate('click');
+
+        expect(wrapper.find('#inc-outer').text()).to.eql('3');
+        expect(wrapper.find('#inc-alt').text()).to.eql('4');
+
+    });
+
     it('handles simple breakout dispatch (#ROOT)', () => {
     
         var wrapper = mount(
@@ -294,7 +349,7 @@ describe('components/scope-provider', () => {
 
         expect(elsewhere.render().html()).to.eql('<a id="elsewhere">1</a>');
         expect(store.getState().value).to.equal(1);
-    })
+    });
 
     it('handles nested breakout dispatch (#ROOT)', () => {
         var wrapper = mount(
