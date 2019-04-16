@@ -1,6 +1,6 @@
 `redux-capsule` aims to help making react-redux components more reusable by wrapping them in separate scopes.
 
-##TL;DR##
+## TL;DR
     // independant counters (trimmed down overview)
     var Capsule = require('redux-capsule');
 
@@ -29,7 +29,7 @@
     });
 
 
-##The Counter Problem##
+## The Counter Problem
 Chances are high you already heard of this problem, but for the sake of completeness we will have a quick look at it.
 
 Consider the following reducer/action setup for a simple counter component:
@@ -62,7 +62,7 @@ So you end up always incrementing both of them, which is probably not what you w
 
 You could change the action types to `INCREMENT_FOO` and `INCREMENT_BAR` but then you would also have to have two seperate reducers. What you want here is some kind of a wrapper that seperates the reducers/actions from one another. Thats what `redux-capsule` is meant to do.
 
-##Capsule Example##
+## Capsule Example
 For this Example we will keep the `counter_actions` and `counter_actions` from above, but combine them using some functions provided by `redux-capsule`:
     
     var counter_actions = /* ... */;
