@@ -1,7 +1,7 @@
 'use strict';
 var React = require('react'),
     opath = require("object-path"),
-    dispatch = require('../util/').dispatch,
+    { dispatch, normalize } = require('../util/'),
     Scope = require('./scope').default;
 
 class ScopeProvider extends Scope {
@@ -55,11 +55,11 @@ var ScopeStore = function (baseStore, scope, delim) {
     store.getState = function () {
         // FIXME: check path exists
         // FIXME: custom delim might need tr//
-        return opath.get(baseStore.getState(), scope);
+        return opath.get(baseStore.getState(), normalize(scope));
     };
  
     store.dispatch = function (action) {
-        return dispatch(baseStore.dispatch, action, scope, delim);
+        return dispatch(baseStore.dispatch, action, normalize(scope), delim);
     };
  
     store.subscribe = function (listener) {

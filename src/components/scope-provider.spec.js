@@ -380,4 +380,28 @@ describe('components/scope-provider', () => {
         });
     });
 
+    it('handles parent scope dispatch (#<<)', () => {
+    
+        var wrapper = mount(
+            <Provider store={ store }>
+                <ScopeProvider path="Outer">
+                    <ScopeProvider path="Inner">
+
+                        <ScopeProvider path="#<<">
+                            <Incrementer id="from-parent" />
+                        </ScopeProvider>
+
+                    </ScopeProvider>
+                </ScopeProvider>
+            </Provider>
+        );
+
+        var fromparent = wrapper.find('#from-parent');
+        fromparent.simulate('click');
+
+        expect(fromparent.render().html()).to.eql('<a id="from-parent">1</a>');
+        expect(store.getState().Outer.value).to.equal(1);
+        expect(store.getState().Outer.Inner.value).to.equal(0);
+    });
+
 });
