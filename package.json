@@ -1,7 +1,7 @@
 {
   "name": "redux-capsule",
-  "version": "0.1.0",
-  "description": "",
+  "version": "1.0.0",
+  "description": "redux reducer scoping",
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
@@ -48,8 +48,8 @@
       }
     }
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Jan Schwalbe",
+  "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.0",
@@ -83,5 +83,17 @@
     "es",
     "dist",
     "src"
-  ]
+  ],
+  "directories": {
+    "example": "examples",
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MARTAflex/redux-capsule.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MARTAflex/redux-capsule/issues"
+  },
+  "homepage": "https://github.com/MARTAflex/redux-capsule#readme"
 }
