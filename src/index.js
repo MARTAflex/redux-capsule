@@ -11,4 +11,6 @@ module.exports = {
     Provider: require('./components/scope-provider').default,
     action: require('./actions/with-scope'),
     thunk: require('./middlewares/thunk'),
+
+    withScopeContext: require('./components/scope').withScopeContext,
 };
