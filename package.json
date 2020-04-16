@@ -1,5 +1,5 @@
 {
-  "name": "redux-capsule",
+  "name": "@martaflex/redux-capsule",
   "version": "1.0.0",
   "description": "redux reducer scoping",
   "main": "lib/index.js",
